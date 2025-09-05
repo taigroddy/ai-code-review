@@ -31,7 +31,7 @@ The installer will automatically:
 
 The installer will guide you through setting up:
 
-1. **Gemini CLI** - Interactive installation guide
+1. **Gemini CLI** - Interactive installation guide ([Link](https://github.com/google-gemini/gemini-cli))
 2. **Google Cloud Project** - Automatic configuration
 3. **Authentication** - Verification during setup
 
@@ -45,7 +45,52 @@ The installer handles everything automatically! If you need to reconfigure later
 ai-code-review --setup
 ```
 
-## 🔧 Usage
+## 🔧 Troubleshooting
+
+If you're having issues after installation, use the built-in repair tool:
+
+```bash
+ai-code-review --repair
+# or if using alias:
+cr --repair
+```
+
+You can also run our troubleshooting script directly:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/taigroddy/ai-code-review/main/troubleshoot.sh)"
+```
+
+### Common Issues
+
+**Command not found:**
+```bash
+# Quick fix (temporary)
+export PATH="$PATH:$HOME/.local/bin"
+alias cr='ai-code-review'
+
+# Permanent fix - reload shell configuration
+source ~/.zshrc  # or ~/.bashrc depending on your shell
+```
+
+**Aliases not working:**
+```bash
+# Reload shell configuration
+source ~/.zshrc  # or ~/.bashrc
+
+# Or restart your terminal
+```
+
+**Gemini authentication issues:**
+```bash
+# Set your Google Cloud project
+export GOOGLE_CLOUD_PROJECT="your-project-id"
+
+# Login to Google Cloud
+gemini
+```
+
+## 🚀 Usage
 
 ### Basic Usage
 
@@ -100,6 +145,7 @@ cr --target main --convention team-convention.md --language vi
 | `--save-to FILE` | Custom output filename | `--save-to review.md` |
 | `--no-save` | Don't save to file (terminal only) | `--no-save` |
 | `--setup` | Setup tool dependencies | `--setup` |
+| `--repair` | Run troubleshooting and repair tool | `--repair` |
 | `--help` | Show help message | `--help` |
 | `--version` | Show version | `--version` |
 
@@ -238,7 +284,7 @@ export GOOGLE_CLOUD_PROJECT="your-project-id"
 
 ```bash
 # Login to Google Cloud
-gcloud auth login
+gemini
 
 # Verify authentication
 ai-code-review --setup
@@ -278,7 +324,7 @@ If you encounter any issues:
 
 **"Gemini authentication failed"**
 ```bash
-gcloud auth login
+gemini
 export GOOGLE_CLOUD_PROJECT="your-project-id"
 ```
 

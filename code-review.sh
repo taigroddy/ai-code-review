@@ -3,7 +3,7 @@
 # AI Code Review Tool using Gemini
 # Usage: ai-code-review --target <branch>
 
-VERSION="1.0.0"
+VERSION="0.0.1"
 SCRIPT_NAME="ai-code-review"
 
 # Colors for output
@@ -37,41 +37,70 @@ print_header() {
 }
 
 show_help() {
-    cat << EOF
-${PURPLE}AI Code Review Tool v${VERSION}${NC}
-
-${CYAN}USAGE:${NC}
-    $SCRIPT_NAME --target <branch> [OPTIONS]
-
-${CYAN}OPTIONS:${NC}
-    -h, --help              Show this help message
-    -v, --version           Show version
-    --target BRANCH         Target branch to compare against (e.g., main, develop)
-    --setup                 Setup authentication and dependencies
-    --save-to FILE          Save review results to specified file (default: code-review-YYYYMMDD-HHMMSS.md)
-    --no-save              Don't save review results to file (output only to console)
-    --convention FILE       Include team convention file as context for review
-    --language LANG         Add additional language output (vi, zh, ja, ko, fr, de, es, pt)
-
-${CYAN}EXAMPLES:${NC}
-    $SCRIPT_NAME --target main                    # Review and save to default file
-    $SCRIPT_NAME --target develop --no-save       # Review without saving to file
-    $SCRIPT_NAME --target main --save-to review.md # Save to custom file
-    $SCRIPT_NAME --target main --convention team-convention.md # Include team conventions
-    $SCRIPT_NAME --target main --language vi         # Add Vietnamese translation
-    $SCRIPT_NAME --setup                          # Setup tool dependencies
-
-${CYAN}REQUIREMENTS:${NC}
-    1. Git repository with commits
-    2. Gemini CLI installed
-    3. GOOGLE_CLOUD_PROJECT environment variable set
-    4. Authenticated with Google Cloud
-
-${CYAN}OUTPUT FILES:${NC}
-    Review results are saved to markdown files in the project root directory.
-    Default filename format: code-review-YYYYMMDD-HHMMSS.md
-
-EOF
+    echo
+    echo -e "${PURPLE}🔍 AI Code Review Tool v${VERSION}${NC}"
+    echo
+    echo -e "${CYAN}📋 USAGE:${NC}"
+    echo -e "    ${YELLOW}$SCRIPT_NAME${NC} --target <branch> [OPTIONS]"
+    echo
+    echo -e "${CYAN}⚙️  OPTIONS:${NC}"
+    echo -e "    ${GREEN}-h, --help${NC}              Show this help message"
+    echo -e "    ${GREEN}-v, --version${NC}           Show version"
+    echo -e "    ${GREEN}--target BRANCH${NC}         Target branch to compare against (e.g., main, develop)"
+    echo -e "    ${GREEN}--setup${NC}                 Setup authentication and dependencies"
+    echo -e "    ${GREEN}--repair${NC}                Run troubleshooting and repair tool"
+    echo -e "    ${GREEN}--save-to FILE${NC}          Save review results to specified file"
+    echo -e "                           ${BLUE}(default: code-review-YYYYMMDD-HHMMSS.md)${NC}"
+    echo -e "    ${GREEN}--no-save${NC}              Don't save review results to file (output only to console)"
+    echo -e "    ${GREEN}--convention FILE${NC}       Include team convention file as context for review"
+    echo -e "    ${GREEN}--language LANG${NC}         Add additional language output"
+    echo -e "                           ${BLUE}(supported: vi, zh, ja, ko, fr, de, es, pt)${NC}"
+    echo
+    echo -e "${CYAN}💡 EXAMPLES:${NC}"
+    echo -e "    ${YELLOW}$SCRIPT_NAME --target main${NC}"
+    echo -e "        ${BLUE}Review and save to default file${NC}"
+    echo
+    echo -e "    ${YELLOW}$SCRIPT_NAME --target develop --no-save${NC}"
+    echo -e "        ${BLUE}Review without saving to file${NC}"
+    echo
+    echo -e "    ${YELLOW}$SCRIPT_NAME --target main --save-to review.md${NC}"
+    echo -e "        ${BLUE}Save to custom file${NC}"
+    echo
+    echo -e "    ${YELLOW}$SCRIPT_NAME --target main --convention team-convention.md${NC}"
+    echo -e "        ${BLUE}Include team conventions${NC}"
+    echo
+    echo -e "    ${YELLOW}$SCRIPT_NAME --target main --language vi${NC}"
+    echo -e "        ${BLUE}Add Vietnamese translation${NC}"
+    echo
+    echo -e "    ${YELLOW}$SCRIPT_NAME --setup${NC}"
+    echo -e "        ${BLUE}Setup tool dependencies${NC}"
+    echo
+    echo -e "    ${YELLOW}$SCRIPT_NAME --repair${NC}"
+    echo -e "        ${BLUE}Run troubleshooting and repair tool${NC}"
+    echo
+    echo -e "${CYAN}📋 REQUIREMENTS:${NC}"
+    echo -e "    ${GREEN}1.${NC} Git repository with commits"
+    echo -e "    ${GREEN}2.${NC} Gemini CLI installed (gemini-cli)"
+    echo -e "    ${GREEN}3.${NC} GOOGLE_CLOUD_PROJECT environment variable set"
+    echo -e "    ${GREEN}4.${NC} Authenticated with Gemini CLI (gemini)"
+    echo
+    echo -e "${CYAN}📁 OUTPUT FILES:${NC}"
+    echo -e "    Review results are saved to markdown files in the project root directory."
+    echo -e "    Default filename format: ${YELLOW}code-review-YYYYMMDD-HHMMSS.md${NC}"
+    echo
+    echo -e "${CYAN}🌐 SUPPORTED LANGUAGES:${NC}"
+    echo -e "    ${GREEN}vi${NC} (Vietnamese), ${GREEN}zh${NC} (Chinese), ${GREEN}ja${NC} (Japanese), ${GREEN}ko${NC} (Korean),"
+    echo -e "    ${GREEN}fr${NC} (French), ${GREEN}de${NC} (German), ${GREEN}es${NC} (Spanish), ${GREEN}pt${NC} (Portuguese)"
+    echo
+    echo -e "${CYAN}� AVAILABLE ALIASES:${NC}"
+    echo -e "    ${GREEN}cr${NC}                      → ai-code-review"
+    echo -e "    ${GREEN}code-review${NC}             → ai-code-review"
+    echo -e "    ${GREEN}review${NC}                  → ai-code-review"
+    echo
+    echo -e "${CYAN}�📞 HELP & SUPPORT:${NC}"
+    echo -e "    Repository: ${BLUE}https://github.com/taigroddy/ai-code-review${NC}"
+    echo -e "    Issues: ${BLUE}https://github.com/taigroddy/ai-code-review/issues${NC}"
+    echo
 }
 
 # Check if we're in a git repository
@@ -95,7 +124,7 @@ check_dependencies() {
     # Check for gemini command
     if ! command -v gemini &> /dev/null; then
         missing_deps+=("gemini")
-        print_info "Install Gemini CLI from: https://github.com/google/generative-ai-cli"
+        print_info "Install Gemini CLI from: https://github.com/google-gemini/gemini-cli"
     fi
     
     if [ ${#missing_deps[@]} -gt 0 ]; then
@@ -122,7 +151,7 @@ check_auth_setup() {
     if ! gemini -p "test" &> /dev/null; then
         print_error "Gemini authentication failed"
         echo ""
-        print_info "Login with: gcloud auth login"
+    print_info "Authorize Gemini CLI by running: gemini"
         return 1
     fi
     
@@ -154,21 +183,37 @@ check_git_status() {
 # Check if target branch exists
 check_target_branch() {
     local target_branch="$1"
+    local found_branches=()
     
     # Check if branch exists locally
     if git show-ref --verify --quiet refs/heads/"$target_branch"; then
-        return 0
+        found_branches+=("local")
+        print_info "Found local branch: $target_branch"
     fi
     
     # Check if branch exists remotely
     if git show-ref --verify --quiet refs/remotes/origin/"$target_branch"; then
-        return 0
+        found_branches+=("remote")
+        print_info "Found remote branch: origin/$target_branch"
     fi
     
-    print_error "Branch '$target_branch' not found locally or remotely"
-    print_info "Available branches:"
-    git branch -a
-    return 1
+    if [ ${#found_branches[@]} -eq 0 ]; then
+        print_error "Branch '$target_branch' not found locally or remotely"
+        print_info "Available branches:"
+        git branch -a
+        return 1
+    fi
+    
+    # Show which branches will be used for comparison
+    if [ ${#found_branches[@]} -eq 2 ]; then
+        print_success "Both local and remote branches available - using origin/$target_branch as primary"
+    elif [[ "${found_branches[0]}" == "remote" ]]; then
+        print_success "Using remote branch: origin/$target_branch"
+    else
+        print_success "Using local branch: $target_branch"
+    fi
+    
+    return 0
 }
 
 # Get list of changed files
@@ -176,12 +221,35 @@ get_changed_files() {
     local target_branch="$1"
     local current_branch=$(git branch --show-current)
     
-    print_info "Comparing $current_branch with $target_branch..." >&2
+    # Check both origin and local branches
+    local origin_target="origin/$target_branch"
+    local local_target="$target_branch"
+    local compare_branches=()
+    
+    # Add origin branch if it exists
+    if git show-ref --verify --quiet refs/remotes/origin/"$target_branch"; then
+        compare_branches+=("$origin_target")
+    fi
+    
+    # Add local branch if it exists and is different from origin
+    if git show-ref --verify --quiet refs/heads/"$target_branch"; then
+        compare_branches+=("$local_target")
+    fi
+    
+    if [ ${#compare_branches[@]} -eq 0 ]; then
+        print_error "Neither local nor remote branch '$target_branch' found"
+        return 1
+    fi
+    
+    print_info "Comparing $current_branch with: ${compare_branches[*]}..." >&2
+    
+    # Use the first available branch (prioritize origin)
+    local primary_branch="${compare_branches[0]}"
     
     # Get the merge base to compare from the common ancestor
-    local merge_base=$(git merge-base HEAD "$target_branch" 2>/dev/null)
+    local merge_base=$(git merge-base HEAD "$primary_branch" 2>/dev/null)
     if [ -z "$merge_base" ]; then
-        merge_base="$target_branch"
+        merge_base="$primary_branch"
     fi
     
     # Get list of changed files
@@ -193,10 +261,28 @@ get_git_diff() {
     local target_branch="$1"
     local current_branch=$(git branch --show-current)
     
+    # Check both origin and local branches
+    local origin_target="origin/$target_branch"
+    local local_target="$target_branch"
+    local compare_branches=()
+    
+    # Add origin branch if it exists
+    if git show-ref --verify --quiet refs/remotes/origin/"$target_branch"; then
+        compare_branches+=("$origin_target")
+    fi
+    
+    # Add local branch if it exists and is different from origin
+    if git show-ref --verify --quiet refs/heads/"$target_branch"; then
+        compare_branches+=("$local_target")
+    fi
+    
+    # Use the first available branch (prioritize origin)
+    local primary_branch="${compare_branches[0]}"
+    
     # Get the merge base
-    local merge_base=$(git merge-base HEAD "$target_branch" 2>/dev/null)
+    local merge_base=$(git merge-base HEAD "$primary_branch" 2>/dev/null)
     if [ -z "$merge_base" ]; then
-        merge_base="$target_branch"
+        merge_base="$primary_branch"
     fi
     
     # Get diff stats first to check size
@@ -231,10 +317,28 @@ extract_api_changes() {
     local target_branch="$1"
     local current_branch=$(git branch --show-current)
     
+    # Check both origin and local branches
+    local origin_target="origin/$target_branch"
+    local local_target="$target_branch"
+    local compare_branches=()
+    
+    # Add origin branch if it exists
+    if git show-ref --verify --quiet refs/remotes/origin/"$target_branch"; then
+        compare_branches+=("$origin_target")
+    fi
+    
+    # Add local branch if it exists and is different from origin
+    if git show-ref --verify --quiet refs/heads/"$target_branch"; then
+        compare_branches+=("$local_target")
+    fi
+    
+    # Use the first available branch (prioritize origin)
+    local primary_branch="${compare_branches[0]}"
+    
     # Get the merge base
-    local merge_base=$(git merge-base HEAD "$target_branch" 2>/dev/null)
+    local merge_base=$(git merge-base HEAD "$primary_branch" 2>/dev/null)
     if [ -z "$merge_base" ]; then
-        merge_base="$target_branch"
+        merge_base="$primary_branch"
     fi
     
     # Get diff for gw/modules folder specifically
@@ -299,10 +403,28 @@ create_review_prompt() {
     local language="$6"
     local current_branch=$(git branch --show-current)
     
+    # Check both origin and local branches
+    local origin_target="origin/$target_branch"
+    local local_target="$target_branch"
+    local compare_branches=()
+    
+    # Add origin branch if it exists
+    if git show-ref --verify --quiet refs/remotes/origin/"$target_branch"; then
+        compare_branches+=("$origin_target")
+    fi
+    
+    # Add local branch if it exists and is different from origin
+    if git show-ref --verify --quiet refs/heads/"$target_branch"; then
+        compare_branches+=("$local_target")
+    fi
+    
+    # Use the first available branch (prioritize origin)
+    local primary_branch="${compare_branches[0]}"
+    
     # Get commit list between branches
-    local merge_base=$(git merge-base HEAD "$target_branch" 2>/dev/null)
+    local merge_base=$(git merge-base HEAD "$primary_branch" 2>/dev/null)
     if [ -z "$merge_base" ]; then
-        merge_base="$target_branch"
+        merge_base="$primary_branch"
     fi
     
     local commit_list=$(git log --oneline "$merge_base"...HEAD 2>/dev/null || echo "No commits found")
@@ -714,13 +836,34 @@ setup_tool() {
     
     # Test authentication
     if ! check_auth_setup; then
-        print_info "Please run: gcloud auth login"
+        print_info "Please run: gemini"
         return 1
     fi
     
     print_success "Setup completed successfully!"
     echo ""
     print_info "You can now run: $SCRIPT_NAME --target main"
+}
+
+# Troubleshoot function
+run_troubleshoot() {
+    print_header "Running AI Code Review Troubleshooting Tool"
+    
+    # Check if troubleshoot.sh exists locally
+    if [ -f "troubleshoot.sh" ]; then
+        print_info "Running local troubleshooting script..."
+        bash troubleshoot.sh
+    else
+        print_info "Downloading and running troubleshooting script..."
+        # Download and run the troubleshoot script
+        if curl -fsSL https://raw.githubusercontent.com/taigroddy/ai-code-review/main/troubleshoot.sh | bash; then
+            print_success "Troubleshooting completed"
+        else
+            print_error "Failed to download or run troubleshooting script"
+            print_info "You can manually download it from: https://raw.githubusercontent.com/taigroddy/ai-code-review/main/troubleshoot.sh"
+            return 1
+        fi
+    fi
 }
 
 # Main function
@@ -774,6 +917,10 @@ main() {
                 ;;
             --setup)
                 setup_tool
+                exit $?
+                ;;
+            --repair)
+                run_troubleshoot
                 exit $?
                 ;;
             *)
