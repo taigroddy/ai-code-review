@@ -13,34 +13,37 @@ A powerful AI-powered code review tool that uses Google Gemini to analyze your G
 
 ## 🚀 Quick Installation
 
-Install the tool with a single command:
+Install the tool with a single command (includes full setup):
 
 ```bash
 sh -c "`curl -fsSL https://raw.githubusercontent.com/taigroddy/ai-code-review/main/install.sh`"
 ```
 
+The installer will automatically:
+- ✅ Check system dependencies
+- ✅ Guide you through Gemini CLI installation
+- ✅ Set up Google Cloud Project configuration
+- ✅ Verify authentication
+- ✅ Install the tool and create aliases
+- ✅ Configure PATH settings
+
 ## 📋 Prerequisites
 
-Before using the tool, you need:
+The installer will guide you through setting up:
 
-1. **Git repository** with committed changes
-2. **Gemini CLI** installed ([Installation Guide](https://github.com/google/generative-ai-cli))
-3. **Google Cloud Project** with Gemini API access
-4. **Authentication** with Google Cloud
+1. **Gemini CLI** - Interactive installation guide
+2. **Google Cloud Project** - Automatic configuration
+3. **Authentication** - Verification during setup
+
+No manual setup required! 🎉
 
 ## ⚡ Quick Setup
 
-Run the setup command to configure dependencies:
+The installer handles everything automatically! If you need to reconfigure later:
 
 ```bash
 ai-code-review --setup
 ```
-
-This will:
-- Check all dependencies
-- Help you configure Google Cloud Project
-- Verify authentication
-- Guide you through the setup process
 
 ## 🔧 Usage
 
@@ -49,6 +52,10 @@ This will:
 ```bash
 # Review changes against main branch
 ai-code-review --target main
+
+# Using short aliases (installed automatically)
+cr --target main
+review --target develop
 
 # Review without saving to file
 ai-code-review --target develop --no-save
@@ -73,10 +80,14 @@ ai-code-review --target main --convention team-convention.md --language vi
 ### Complete Example
 
 ```bash
+# Full command
 ai-code-review --target main \
   --convention team-convention.md \
   --language vi \
   --save-to review-$(date +%Y%m%d).md
+
+# Using short alias
+cr --target main --convention team-convention.md --language vi
 ```
 
 ## 📖 Command Options
@@ -134,6 +145,18 @@ The tool supports bilingual output in the following languages (in addition to En
 | `pt` | Portuguese (Português) | `--language pt` |
 
 When a language is specified, the AI will provide translations below the English content for better accessibility.
+
+## ⚡ Quick Aliases
+
+The installer automatically creates convenient aliases for faster usage:
+
+| Alias | Full Command | Usage |
+|-------|--------------|-------|
+| `cr` | `ai-code-review` | `cr --target main` |
+| `code-review` | `ai-code-review` | `code-review --target develop` |
+| `review` | `ai-code-review` | `review --target main --language vi` |
+
+These aliases are automatically added to your shell configuration during installation.
 
 ## 📊 Sample Output
 
